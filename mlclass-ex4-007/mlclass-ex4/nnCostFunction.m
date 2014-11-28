@@ -64,12 +64,18 @@ Theta2_grad = zeros(size(Theta2));
 
 
 
+%%PART1 IMPLEMENT FEEDFOWARD%%
+m=size(X,1);
 
+X=[ones(m,1) X];
 
+a2=sigmoid(X*Theta1')
 
+a2=[ones(m,1) a2];
 
+a3=a2*Theta2'; %This is going to yield a m*K matrix
 
-
+%PART2 COST FUNCTION FOR BACKWARD PROP%
 
 
 
