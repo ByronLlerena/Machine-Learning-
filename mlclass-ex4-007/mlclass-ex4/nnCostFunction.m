@@ -27,7 +27,9 @@ m = size(X, 1);
          
 % You need to return the following variables correctly 
 J = 0;
+
 Theta1_grad = zeros(size(Theta1));
+
 Theta2_grad = zeros(size(Theta2));
 
 % ====================== YOUR CODE HERE ======================
@@ -65,30 +67,83 @@ Theta2_grad = zeros(size(Theta2));
 
 
 %%PART1 IMPLEMENT FEEDFOWARD%%
-m=size(X,1);
+
+[m,n]=size(X);
 
 X=[ones(m,1) X];
 
-a2=sigmoid(X*Theta1')
+a2=sigmoid(X*Theta1');% X is a m x (n+1) matrix and Theta 1 is a (n+1)xHiddenLayer 
 
 a2=[ones(m,1) a2];
 
-a3=a2*Theta2'; %This is going to yield a m*K matrix
+a3=sigmoid(a2*Theta2'); %This is going to yield a m*K matrix
 
 %PART2 COST FUNCTION FOR BACKWARD PROP%
 
+% First we need to recode the labels of y as vectors
+
+           yRecoded=recodeLabels(y,num_labels); % K x m matrix
+
+%We implement the Cost Function J(theta)
+
+           su=(log(a3)*yRecoded)+(log(1.0.-a3)*(1.0.-yRecoded));
+           
+           J=(-1/m)*sum(diag(su));
+
+%PART 3 BACK PROP ALGORITHM           
+
+%Init Theta1 and Theta2
 
 
+Theta1=randInitializeWeights(n,hidden_layer_size);
+Theta2=randInitializeWeights(hidden_layer_size,num_labels);
+D1=zeros(size(Theta1_grad));
+D2=zeros(size(Theta2_grad));
+
+for t=1:m
+
+%3.1 Foward Prop for every xi and yi
+
+	a1=X(t,:)';
+       
+
+        z2=Theta1*a1;   % HiddenLayerUnits Column Vector
+      
+
+        a2=sigmoid(z2);  % 
+      
+
+        a2=[1; a2]; % add the bias
+       
+
+        z3= Theta2*a2;  % Kx1 matrix
+
+        a3=sigmoid(z3);  % Kx1 matrix
+    
 
 
+%3.2 Implement Backward Propagation to get partial derivatives
+       
+        delta_3=a3-yRecoded(:,t); % Kx1 matrix
+  
+        g2=[1;(sigmoidGradient(z2))]; %(hiddenLayer+1)x1 matrix (bias is included);
 
+        delta_2=(Theta2'*delta_3).*g2;%hidden+1 x 1 matrix
+        
+ 
+        D1=D1+(delta_2(2:end)*a1(2:end)');
+        D2=D2+(delta_3*a2(2:end)');
+        
 
-
+end
 
 
 % -------------------------------------------------------------
 
 % =========================================================================
+
+Theta1_grad=(D1/m);
+Theta2_grad=(D2/m);
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
