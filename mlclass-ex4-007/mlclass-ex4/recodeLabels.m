@@ -8,12 +8,16 @@ m=size(y,1);
 
 recodedMatrix=zeros(numberOfLabels,m);
 
-%for i=1:m
+aux=recodedMatrix;
 
-%recodedMatrix(y(i),i)=1;
+for i=1:m
+
+ n=y(i);
+ aux(n,i)=1;
 
 
-%end
+end
 
+recodedMatrix=aux;
 
 end
