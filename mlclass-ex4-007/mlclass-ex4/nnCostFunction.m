@@ -78,7 +78,7 @@ a2=[ones(m,1) a2];
 
 a3=sigmoid(a2*Theta2'); %This is going to yield a m*K matrix
 
-%PART2 COST FUNCTION FOR BACKWARD PROP%
+%PART2 COST FUNCTION FOR BACKWARD PROP WITH REGULARIZATION%
 
 % First we need to recode the labels of y as vectors
 
@@ -88,7 +88,10 @@ a3=sigmoid(a2*Theta2'); %This is going to yield a m*K matrix
 
            su=(log(a3)*yRecoded)+(log(1.0.-a3)*(1.0.-yRecoded));
            
-           J=(-1/m)*sum(diag(su));
+J=(-1/m)*sum(diag(su));
+
+Reg=(lambda/(2*m))*((sum(sumsq(Theta1(:,2:end))))+(sum(sumsq(Theta2(:,2:end)))));
+J=J+Reg;
 
 %PART 3 BACK PROP ALGORITHM           
 
@@ -129,10 +132,8 @@ for t=1:m
         g2=[1;(sigmoidGradient(z2))]; %(hiddenLayer+1)x1 matrix (bias is included);
 
         delta_2=(Theta2'*delta_3).*g2;%hidden+1 x 1 matrix
-        
- 
-        D1=D1+(delta_2(2:end)*a1(2:end)');
-        D2=D2+(delta_3*a2(2:end)');
+        D1=D1+(delta_2(2:end)*a1');
+        D2=D2+(delta_3*a2');
         
 
 end
@@ -142,8 +143,14 @@ end
 
 % =========================================================================
 
+%REGULARIZATION FOR GRADIENT
+
+  
+  
 Theta1_grad=(D1/m);
+Theta1_grad(:,2:end)=Theta1_grad(:,2:end)+(lambda/m)*Theta1(:,2:end);
 Theta2_grad=(D2/m);
+Theta2_grad(:,2:end)=Theta2_grad(:,2:end)+(lambda/m)*Theta2(:,2:end);
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
