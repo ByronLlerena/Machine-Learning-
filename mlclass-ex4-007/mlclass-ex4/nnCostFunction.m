@@ -72,7 +72,10 @@ Theta2_grad = zeros(size(Theta2));
 
 X=[ones(m,1) X];
 
-a2=sigmoid(X*Theta1');% X is a m x (n+1) matrix and Theta 1 is a (n+1)xHiddenLayer 
+
+z2=X*Theta1';% X is a m x (n+1) matrix and Theta 1 is a (n+1)xHiddenLayer 
+
+a2=sigmoid(z2);
 
 a2=[ones(m,1) a2];
 
@@ -86,12 +89,13 @@ a3=sigmoid(a2*Theta2'); %This is going to yield a m*K matrix
 
 %We implement the Cost Function J(theta)
 
-           su=(log(a3)*yRecoded)+(log(1.0.-a3)*(1.0.-yRecoded));
-           
-J=(-1/m)*sum(diag(su));
+           su=(log(a3)'.*yRecoded)+(log(1.0.-a3)'.*(1.0.-yRecoded));
+                                                 
+           J=(-1/m)*sum(su(:));
 
-Reg=(lambda/(2*m))*((sum(sumsq(Theta1(:,2:end))))+(sum(sumsq(Theta2(:,2:end)))));
-J=J+Reg;
+           Reg=(lambda/(2*m))*((sum(sumsq(Theta1(:,2:end))))+(sum(sumsq(Theta2(:,2:end)))));%Make sure to exclude the Bias Units
+
+	   J=J+Reg;
 
 %PART 3 BACK PROP ALGORITHM           
 
@@ -103,40 +107,24 @@ Theta2=randInitializeWeights(hidden_layer_size,num_labels);
 D1=zeros(size(Theta1_grad));
 D2=zeros(size(Theta2_grad));
 
-for t=1:m
 
-%3.1 Foward Prop for every xi and yi
 
-	a1=X(t,:)';
-       
-
-        z2=Theta1*a1;   % HiddenLayerUnits Column Vector
-      
-
-        a2=sigmoid(z2);  % 
-      
-
-        a2=[1; a2]; % add the bias
-       
-
-        z3= Theta2*a2;  % Kx1 matrix
-
-        a3=sigmoid(z3);  % Kx1 matrix
-    
-
+%3.1 (This is making use of a vectorized method)
+ 
 
 %3.2 Implement Backward Propagation to get partial derivatives
        
-        delta_3=a3-yRecoded(:,t); % Kx1 matrix
+        delta_3=a3-yRecoded'; % m x K  matrix
   
-        g2=[1;(sigmoidGradient(z2))]; %(hiddenLayer+1)x1 matrix (bias is included);
+        g2=[(sigmoidGradient(z2))]; %m x hiddenLayerUnits   (bias is excluded);
 
-        delta_2=(Theta2'*delta_3).*g2;%hidden+1 x 1 matrix
-        D1=D1+(delta_2(2:end)*a1');
-        D2=D2+(delta_3*a2');
+        delta_2=(delta_3*Theta2(:,2:end)).*g2;%hidden+1 x 1 matrix
+	
+        D1=delta_2'*X;
+        D2=delta_3'*a2;
         
 
-end
+
 
 
 % -------------------------------------------------------------
