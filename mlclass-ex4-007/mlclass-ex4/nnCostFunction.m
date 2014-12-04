@@ -118,7 +118,7 @@ D2=zeros(size(Theta2_grad));
   
         g2=[(sigmoidGradient(z2))]; %m x hiddenLayerUnits   (bias is excluded);
 
-        delta_2=(delta_3*Theta2(:,2:end)).*g2;%hidden+1 x 1 matrix
+        delta_2=(delta_3*Theta2(:,2:end)).*g2;% m x hidden  matrix
 	
         D1=delta_2'*X;
         D2=delta_3'*a2;
@@ -135,10 +135,10 @@ D2=zeros(size(Theta2_grad));
 
   
   
-Theta1_grad=(D1/m);
-Theta1_grad(:,2:end)=Theta1_grad(:,2:end)+(lambda/m)*Theta1(:,2:end);
-Theta2_grad=(D2/m);
-Theta2_grad(:,2:end)=Theta2_grad(:,2:end)+(lambda/m)*Theta2(:,2:end);
+Theta1_grad=(D1/m)+(lambda/m)*Theta1;
+Theta1_grad(:,1)=D1(:,1)/m;
+Theta2_grad=(D2/m)+(lambda/m)*Theta2;
+Theta2_grad(:,1)=D2(:,1)/m;
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
