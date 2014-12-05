@@ -12,7 +12,11 @@ recodedMatrix=zeros(numberOfLabels,m);
 
 %for i=1:m
 
+<<<<<<< HEAD
  %n=y(i);
+=======
+% n=y(i);
+>>>>>>> 48b27942c8e83fd34212f2b72ca2fd2bb2a8964a
 % aux(n,i)=1;
 
 
@@ -20,11 +24,16 @@ recodedMatrix=zeros(numberOfLabels,m);
 
 %recodedMatrix=aux;
 
+<<<<<<< HEAD
 
 %The above implementation is making use of a for loop. This one right here will use a more efficient way.
 
 I=eye(numberOfLabels);
 recodedMatrix=(I(y,:))';
+=======
+I=eye(numberOfLabels);
+recodedMatrix=I(y,:)';
+>>>>>>> 48b27942c8e83fd34212f2b72ca2fd2bb2a8964a
 
 
 end
