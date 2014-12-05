@@ -70,10 +70,10 @@ Theta2_grad = zeros(size(Theta2));
 
 [m,n]=size(X);
 
-X=[ones(m,1) X];
+a1=[ones(m,1) X];
 
 
-z2=X*Theta1';% X is a m x (n+1) matrix and Theta 1 is a (n+1)xHiddenLayer 
+z2=a1*Theta1';% a1 is a m x (n+1) matrix and Theta 1 is a (n+1)xHiddenLayer 
 
 a2=sigmoid(z2);
 
@@ -117,15 +117,14 @@ D2=zeros(size(Theta2_grad));
         delta_3=a3-yRecoded'; % m x K  matrix
   
         g2=[(sigmoidGradient(z2))]; %m x hiddenLayerUnits   (bias is excluded);
-
-        delta_2=(delta_3*Theta2(:,2:end)).*g2;% m x hidden  matrix
+        
+        Theta2aux=zeros(size(num_labels,hidden_layer_size));
+        Theta2aux=Theta2(:,2:end);
+        delta_2=(delta_3*Theta2aux).*g2;% m x hidden  matrix
 	
-        D1=delta_2'*X;
+        D1=delta_2'*a1;
         D2=delta_3'*a2;
         
-
-
-
 
 % -------------------------------------------------------------
 
@@ -133,12 +132,14 @@ D2=zeros(size(Theta2_grad));
 
 %REGULARIZATION FOR GRADIENT
 
-  
-  
-Theta1_grad=(D1/m)+(lambda/m)*Theta1;
-Theta1_grad(:,1)=D1(:,1)/m;
-Theta2_grad=(D2/m)+(lambda/m)*Theta2;
-Theta2_grad(:,1)=D2(:,1)/m;
+reg1=(lambda/m)*Theta1;
+reg1(:,1)=0;
+Theta1_grad=((1/m)*(D1))+reg1;
+
+reg2=(lambda/m)*Theta2;
+reg2(:,1)=0;
+Theta2_grad=((1/m)*(D2))+reg2;
+
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
