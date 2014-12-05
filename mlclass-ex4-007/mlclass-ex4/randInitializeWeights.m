@@ -19,12 +19,9 @@ W = zeros(L_out, 1 + L_in);
 % Note: The first row of W corresponds to the parameters for the bias units
 %
 
-			   EPSILONinit=0.12;
 
-% One effective strategy to pick EPSILONinit is to base it on the number of units
-%in the network. A good choice is (rootSquare(6)/rootSquare(Lin+Lout))
 
-W=rand(L_out,1+L_in)*2*EPSILONinit-EPSILONinit;% in this particaular case 10x401
+
 
 
 

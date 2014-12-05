@@ -27,9 +27,7 @@ m = size(X, 1);
          
 % You need to return the following variables correctly 
 J = 0;
-
 Theta1_grad = zeros(size(Theta1));
-
 Theta2_grad = zeros(size(Theta2));
 
 % ====================== YOUR CODE HERE ======================
@@ -66,63 +64,18 @@ Theta2_grad = zeros(size(Theta2));
 
 
 
-%%PART1 IMPLEMENT FEEDFOWARD%%
-
-[m,n]=size(X);
-
-X=[ones(m,1) X];
-
-
-z2=X*Theta1';% X is a m x (n+1) matrix and Theta 1 is a (n+1)xHiddenLayer 
-
-a2=sigmoid(z2);
-
-a2=[ones(m,1) a2];
-
-a3=sigmoid(a2*Theta2'); %This is going to yield a m*K matrix
-
-%PART2 COST FUNCTION FOR BACKWARD PROP WITH REGULARIZATION%
-
-% First we need to recode the labels of y as vectors
-
-           yRecoded=recodeLabels(y,num_labels); % K x m matrix
-
-%We implement the Cost Function J(theta)
-
-           su=(log(a3)'.*yRecoded)+(log(1.0.-a3)'.*(1.0.-yRecoded));
-                                                 
-           J=(-1/m)*sum(su(:));
-
-           Reg=(lambda/(2*m))*((sum(sumsq(Theta1(:,2:end))))+(sum(sumsq(Theta2(:,2:end)))));%Make sure to exclude the Bias Units
-
-	   J=J+Reg;
-
-%PART 3 BACK PROP ALGORITHM           
-
-%Init Theta1 and Theta2
-
-
-Theta1=randInitializeWeights(n,hidden_layer_size);
-Theta2=randInitializeWeights(hidden_layer_size,num_labels);
-D1=zeros(size(Theta1_grad));
-D2=zeros(size(Theta2_grad));
 
 
 
-%3.1 (This is making use of a vectorized method)
- 
 
-%3.2 Implement Backward Propagation to get partial derivatives
-       
-        delta_3=a3-yRecoded'; % m x K  matrix
-  
-        g2=[(sigmoidGradient(z2))]; %m x hiddenLayerUnits   (bias is excluded);
 
-        delta_2=(delta_3*Theta2(:,2:end)).*g2;% m x hidden  matrix
-	
-        D1=delta_2'*X;
-        D2=delta_3'*a2;
-        
+
+
+
+
+
+
+
 
 
 
@@ -130,15 +83,6 @@ D2=zeros(size(Theta2_grad));
 % -------------------------------------------------------------
 
 % =========================================================================
-
-%REGULARIZATION FOR GRADIENT
-
-  
-  
-Theta1_grad=(D1/m)+(lambda/m)*Theta1;
-Theta1_grad(:,1)=D1(:,1)/m;
-Theta2_grad=(D2/m)+(lambda/m)*Theta2;
-Theta2_grad(:,1)=D2(:,1)/m;
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
