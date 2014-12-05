@@ -82,16 +82,17 @@ a3=sigmoid(a2*Theta2'); %This is going to yield a m*K matrix
 
 % First we need to recode the labels of y as vectors
 
-    yRecoded=recodeLabels(y,num_labels); % K x m matrix
+           yRecoded=recodeLabels(y,num_labels); % K x m matrix
 
 %We implement the Cost Function J(theta)
 
-           su=(log(a3)*yRecoded)+(log(1.0.-a3)*(1.0.-yRecoded));
-           
-J=(-1/m)*sum(diag(su));
+           su=(log(a3)'.*yRecoded)+(log(1.0.-a3)'.*(1.0.-yRecoded));
+                                                 
+           J=(-1/m)*sum(su(:));
 
-Reg=(lambda/(2*m))*((sum(sumsq(Theta1(:,2:end))))+(sum(sumsq(Theta2(:,2:end)))));
-J=J+Reg;
+           Reg=(lambda/(2*m))*((sum(sumsq(Theta1(:,2:end))))+(sum(sumsq(Theta2(:,2:end)))));%Make sure to exclude the Bias Units
+
+	   J=J+Reg;
 
 %PART 3 BACK PROP ALGORITHM           
 
@@ -113,7 +114,7 @@ for t=1:m
         z2=Theta1*a1;   % HiddenLayerUnits Column Vector
       
 
-        a2=sigmoid(z2);   
+        a2=sigmoid(z2);  % 
       
 
         a2=[1; a2]; % add the bias
@@ -129,10 +130,10 @@ for t=1:m
        
         delta_3=a3-yRecoded(:,t); % Kx1 matrix
   
-        g2=[(sigmoidGradient(z2))]; %(hiddenLayer)x1 matrix (bias is included);
+        g2=[1;(sigmoidGradient(z2))]; %(hiddenLayer+1)x1 matrix (bias is included);
 
-        delta_2=(Theta2(:,2:end)'*delta_3).*g2;%hidden x 1 matrix
-        D1=D1+(delta_2*a1');
+        delta_2=(Theta2'*delta_3).*g2;%hidden+1 x 1 matrix
+        D1=D1+(delta_2(2:end)*a1');
         D2=D2+(delta_3*a2');
         
 
@@ -147,10 +148,10 @@ end
 
   
   
-Theta1_grad(:,1)=(D1(:,1)/m);
-Theta1_grad(:,2:end)=(D1(:,2:end)/m)+((lambda/m)*Theta1(:,2:end));
-Theta2_grad(:,1)=(D2(:,1)/m);
-Theta2_grad(:,2:end)=(D2(:,2:end)/m)+((lambda/m)*Theta2(:,2:end));
+Theta1_grad=(D1/m);
+Theta1_grad(:,2:end)=Theta1_grad(:,2:end)+(lambda/m)*Theta1(:,2:end);
+Theta2_grad=(D2/m);
+Theta2_grad(:,2:end)=Theta2_grad(:,2:end)+(lambda/m)*Theta2(:,2:end);
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
