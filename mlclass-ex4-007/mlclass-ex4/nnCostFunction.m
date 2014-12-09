@@ -1,4 +1,4 @@
-Afunction [J grad] = nnCostFunction(nn_params, ...
+function [J grad] = nnCostFunction(nn_params, ...
                                    input_layer_size, ...
                                    hidden_layer_size, ...
                                    num_labels, ...
@@ -136,7 +136,7 @@ delta_3=a3-yRecoded; % (5000 x 10) matrix
 g2=sigmoidGradient(z2);%(5000 x 25) matrix
 delta_2=(delta_3*Theta2Aux).*g2; %(5000 x 25) matrix
 
-D1=delta_2'*a1;% 25 x 401 matrix 
+D1=delta_2'*a1; % 25 x 401 matrix 
 D2=delta_3'*a2; % 10 x 26  matrix
 
 % -------------------------------------------------------------
@@ -148,7 +148,7 @@ D2=delta_3'*a2; % 10 x 26  matrix
 Theta1_grad(:,1)=D1(:,1)*(1/m);
 Theta2_grad(:,1)=D2(:,1)*(1/m);
 
-  Theta1_grad(:,2:end)=(D1(:,2:end)/m)+(lambda/m)*Theta1(:,2:end);
+Theta1_grad(:,2:end)=(D1(:,2:end)/m)+(lambda/m)*Theta1(:,2:end);
 Theta2_grad(:,2:end)=(D2(:,2:end)/m)+(lambda/m)*Theta2(:,2:end);
 
 % Unroll gradients
