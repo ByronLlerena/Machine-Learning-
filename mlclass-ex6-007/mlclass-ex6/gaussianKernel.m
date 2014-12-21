@@ -17,6 +17,9 @@ sim = 0;
 %
 
 
+diff=x1-x2;
+
+sim=exp(-sumsq(diff)/(2*(sigma^2)));
 
 
 
