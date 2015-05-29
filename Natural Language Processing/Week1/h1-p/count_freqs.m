@@ -7,7 +7,7 @@ words={};
 typesWords={};
 counts1Gram=0;
 types1Gram={};
-counts2Gram=0;
+counts2Gram=zeros(9,1);
 types2Gram={};
 counts3Gram=0;
 types3Gram={};
@@ -31,20 +31,43 @@ contador=1;
 
 %I take the forst two lines
 
-line1=fgetl(data);
+line1=fgetl(data)
 firstWord="**";
-secondWord="*";  
+secondWord="*";
+i=1;
+j=1;
 
-  while(line1!=-1)
+types2Gram={["I-GENE"]["I-GENE"];["O"]["I-GENE"];["I-GENE"]["O"];["O"]["O"];["*"]["O"];["*"]["I-GENE"];["**"]["*"];["I-GENE"]["STOP"];["O"]["STOP"]};
+while(line1!=-1)
 
-  arreglo1=strsplit(line1," ");
-  
-   if(length(arreglo1)>0)
+   
+                    
+                  arreglo1=strsplit(line1," ");
+                  thirdWord=arreglo1(2);
 
-                 % thirdWord=arreglo1(1);
-                 % countNgrams(firstWord,secondWord,thirdWord);
-                 % firstWord=secondWord;
-                 % secondWord=arreglo1(1);  
+                 %SPACE TO COUNT 1-GRAMS   
+                 compare3=strcmp(thirdWord,types1Gram); 
+
+                 if(any(compare3))
+		   index1=find(compare3); 
+                   counts1Gram(index1,1)= counts1Gram(index1,1)+1;
+		 else
+                   counts1Gram(i,1)=1;  
+		   types1Gram(i)=thirdword;		    
+		     i++;
+		 endif	
+                                  
+                %SPACE TO COUNT BI-GRAMS
+                 a=strcmp(firstWord,types2Gram(:,1));   
+                 b=strcmp(secondWord,types2Gram(:,2));
+                 c=a&b;
+                 d=find(c);   
+                 counts2Gram(d,1)=counts2Gram(d,1)+1; 
+
+                %SPACE TO COUNT TRI-GRAMS
+
+% firstWord=secondWord;
+% secondWord=arreglo1(2);  
 
 	          compare1=strcmp(arreglo1(1),words);
 
@@ -54,7 +77,7 @@ secondWord="*";
 
 	                    d=find(compare1);%finds the index where the word is stored
                 
-	                    compare2=strcmp(typesWords(d),arreglo1(2));% Compare if the wrod was stored as a Word or as I-GENE
+	                    compare2=strcmp(typesWords(d),arreglo1(2));
 
 	         	     if(compare2)
 		              %The word was already stored either as a WORD or I-GENE
@@ -78,19 +101,20 @@ secondWord="*";
                  
 		    line1=fgetl(data);
                     
-  else
-     %That was a blank space so I need to get a new line 
- % thirdWord="STOP";
- % countNgrams(firstWord,secondWord,thirdWord);
- % firstWord="**";
- % secondWord="*";
- printf("Espacio NUevo");
+                 
+if(strcmp(line1,"")) 
+% printf("Espacio NUevo");   
+% thirdWord="STOP"
+%countNgrams(firstWord,secondWord,thirdWord);
+% firstWord="**";
+ %secondWord="*";
+ 
 
- line1=fgetl(data);
+line1=fgetl(data);
  %blankspaces(end+1)=contador;
  %contador++;
-
-  endif
+endif
+  
 
  
   
